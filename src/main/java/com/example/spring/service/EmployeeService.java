@@ -4,6 +4,7 @@ import com.example.spring.exeptions.EmployeeAlreadyAddedException;
 import com.example.spring.exeptions.EmployeeNotFoundException;
 import com.example.spring.exeptions.EmployeeStorageIsFullException;
 import com.example.spring.model.Employee;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -14,11 +15,19 @@ public class EmployeeService {
 
     private final Map<String, Employee> employees = new HashMap<>(MAX_COUNT);
 
-    public void add(String firstName, String lastName, int salary, int department) throws EmployeeAlreadyAddedException {
+    public void add(String firstName, String lastName, int salary, int department) throws EmployeeAlreadyAddedException, WrongNameException {
+        if(StringUtils.isAlpha(firstName) || !StringUtils.isAlpha(lastName)){
+            throw new WrongNameException ("Name of last name must contain letters");
+        }
+
+
         if (employees.size() >= MAX_COUNT ) {
             throw new EmployeeStorageIsFullException();
         }
-        Employee employee = new Employee(firstName,lastName, salary, department);
+        Employee employee = new Employee(StringUtils.capitalize(firstName),
+                StringUtils.capitalize(lastName),
+                salary,
+                department);
         var key = makeKey(firstName, lastName);
         if (employees.containsKey(key)) {
             throw new EmployeeAlreadyAddedException();
