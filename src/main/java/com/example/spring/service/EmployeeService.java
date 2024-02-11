@@ -14,11 +14,11 @@ public class EmployeeService {
 
     private final Map<String, Employee> employees = new HashMap<>(MAX_COUNT);
 
-    public void add(String firstName, String lastName) {
+    public void add(String firstName, String lastName, int salary, int department) throws EmployeeAlreadyAddedException {
         if (employees.size() >= MAX_COUNT ) {
             throw new EmployeeStorageIsFullException();
         }
-        Employee employee = new Employee(firstName,lastName);
+        Employee employee = new Employee(firstName,lastName, salary, department);
         var key = makeKey(firstName, lastName);
         if (employees.containsKey(key)) {
             throw new EmployeeAlreadyAddedException();
